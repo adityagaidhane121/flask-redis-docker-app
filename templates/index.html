@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Team Dashboard</title>
+</head>
+<body>
+    <h1>Project Team</h1>
+    <table border="1" style="margin: 0 auto; width: 50%;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in team %}
+            <tr>
+                <td>{{ member.name }}</td>
+                <td>{{ member.role }}</td>
+                <td>{{ member.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>>
