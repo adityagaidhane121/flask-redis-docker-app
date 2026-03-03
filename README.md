@@ -47,3 +47,19 @@ Service Discovery: I established a bridge network that enables the Flask app to 
 Workflow Automation: The entire environment—including networking and volume mounting—is automated through a single docker-compose up --build command.
 5. Version Control & Repository Hygiene
 Git Management: I utilized a .gitignore to maintain a clean workspace, specifically excluding Python artifacts (__pycache__) and runtime system files (like the gunicorn.ctl socket
+. Handling Runtime Artifacts (gunicorn.ctl)
+The Issue: While attempting to push the project to GitHub, I encountered a fatal error: error: open("gunicorn.ctl"): Function not implemented. This was caused by Gunicorn creating a Unix domain socket file within the working directory.
+
+The Insight: Git is designed to track source code, not active system sockets or runtime artifacts.
+
+The Resolution: I implemented a robust .gitignore strategy to exclude gunicorn.ctl, __pycache__, and other ephemeral files. This ensured a clean repository and prevented environment-specific system files from interfering with version control.
+
+2. Startup Race Conditions (Service Dependencies)
+The Issue: In a distributed environment, the Web container often starts faster than the Redis database container, leading to immediate connection failures.
+
+The Resolution: Instead of relying solely on Docker Compose's depends_on, I implemented a Python-level retry loop with exponential backoff. This makes the application "self-healing," as it gracefully waits for the database to be healthy before attempting to serve traffic.
+
+3. Environment Parity (Windows vs. Linux)
+The Issue: Moving between Git Bash (Windows) and the Linux-based Docker containers often causes line-ending issues (LF vs. CRLF).
+
+The Resolution: I configured Git to handle line-ending conversions automatically, ensuring that scripts remain executable inside the Linux container regardless of the host OS.
